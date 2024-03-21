@@ -1,61 +1,66 @@
 import { Route, Routes } from "react-router-dom";
-import Login from "./pages/login/Login";
 import Sidebar from "./components/Sidebar";
-import Employees from "./pages/employee/Employees";
-import Department from "./pages/department/Department";
-import DepartmentDetail from "./pages/department/DepartmentDetail";
-import Faculty from "./pages/faculty/Faculty";
-import FacultyDetail from "./pages/faculty/FacultyDetail";
-import Salary from "./pages/salary/Salary";
-import Work from "./pages/work/Work";
-import AddEmployee from "./pages/employee/AddEmployee";
-import EditEmployee from "./pages/employee/EditEmployee";
-import AddDepartment from "./pages/department/AddDepartment";
-import AddEmployeeDepartment from "./pages/department/AddEmployeeDepartment";
-import AddFaculty from "./pages/faculty/AddFaculty";
-import AddEmployeeFaculty from "./pages/faculty/AddEmployeeFaculty";
-import AddWork from "./pages/work/AddWork";
+import Login from "./pages/Login";
+import Employees from "./pages/Employee";
+import Employee from "./pages/Employee/_id";
+import AddEmployee from "./pages/Employee/add";
+import EditEmployee from "./pages/Employee/edit";
+import Departments from "./pages/Department";
+import Department from "./pages/Department/_id";
+import AddDepartment from "./pages/Department/add";
+import Faculties from "./pages/Faculty";
+import AddFaculty from "./pages/Faculty/add";
+import Faculty from "./pages/Faculty/_id";
+import Work from "./pages/work";
+import AddWork from "./pages/work/add";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 function App() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    const decoded = jwtDecode(token);
+    const currentTime = Date.now() / 1000;
+    if (decoded.exp < currentTime) {
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
+    if (window.location.pathname === "/") {
+      navigate("/nhan-vien");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route element={<Sidebar />}>
         {/* employee */}
-        <Route path="/" element={<Employees />} />
-        <Route path="/nhan-vien/them-nhan-vien" element={<AddEmployee />} />
-        <Route
-          path="/nhan-vien/sua-nhan-vien/:idnhansu"
-          element={<EditEmployee />}
-        />
-        {/* -------------------------------------------------- */}
+        <Route path="/nhan-vien" element={<Employees />} />
+        <Route path="/nhan-vien/them" element={<AddEmployee />} />
+        <Route path="/nhan-vien/chi-tiet/:id" element={<Employee />} />
+        <Route path="/nhan-vien/sua/:id" element={<EditEmployee />} />
+        {/* ------------------------------------------------------- */}
         {/* department */}
-        <Route path="/phong-ban" element={<Department />} />
-        <Route path="/phong-ban/them-phong-ban" element={<AddDepartment />} />
-        <Route
-          path="/phong-ban/chi-tiet/:tenphongban/them-nhan-vien"
-          element={<AddEmployeeDepartment />}
-        />
-        <Route
-          path="/phong-ban/chi-tiet/:tenphongban"
-          element={<DepartmentDetail />}
-        />
-        {/* -------------------------------------------------- */}
+        <Route path="/phong-ban" element={<Departments />} />
+        <Route path="/phong-ban/them" element={<AddDepartment />} />
+        <Route path="/phong-ban/chi-tiet/:id" element={<Department />} />
+        {/* ------------------------------------------------------- */}
         {/* faculty */}
-        <Route path="/khoa" element={<Faculty />} />
-        <Route path="/khoa/them-khoa" element={<AddFaculty />} />
-        <Route
-          path="/khoa/chi-tiet/:tenkhoa/them-nhan-vien"
-          element={<AddEmployeeFaculty />}
-        />
-        <Route path="/khoa/chi-tiet/:tenkhoa" element={<FacultyDetail />} />
-        {/* -------------------------------------------------- */}
-        {/* salary */}
-        <Route path="/luong" element={<Salary />} />
-        {/* -------------------------------------------------- */}
+        <Route path="/khoa" element={<Faculties />} />
+        <Route path="/khoa/them" element={<AddFaculty />} />
+        <Route path="/khoa/chi-tiet/:id" element={<Faculty />} />
+        {/* ------------------------------------------------------- */}
         {/* work */}
         <Route path="/cong-tac" element={<Work />} />
-        <Route path="/cong-tac/them-cong-tac" element={<AddWork />} />
-        {/* -------------------------------------------------- */}
+        <Route path="/cong-tac/them" element={<AddWork />} />
+        {/* ------------------------------------------------------- */}
+        {/* rest */}
+        {/* ------------------------------------------------------- */}
       </Route>
     </Routes>
   );

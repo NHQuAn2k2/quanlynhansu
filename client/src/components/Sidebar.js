@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -11,18 +11,19 @@ import Avatar from "@mui/material/Avatar";
 import GroupIcon from "@mui/icons-material/Group";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import WorkIcon from "@mui/icons-material/Work";
-import PaidIcon from "@mui/icons-material/Paid";
 import { grey, blueGrey } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 const heightHeader = "55px";
 export default function Sidebar() {
   const navigate = useNavigate();
   const [selected, setSelected] = useState(1);
+  const [username, setUsername] = useState("");
   const handleListItemClick = (event, index) => {
     setSelected(index);
     switch (index) {
       case 1:
-        navigate("/");
+        navigate("/nhan-vien");
         break;
       case 2:
         navigate("/phong-ban");
@@ -31,15 +32,20 @@ export default function Sidebar() {
         navigate("/khoa");
         break;
       case 4:
-        navigate("/luong");
+        navigate("/cong-tac");
         break;
       case 5:
-        navigate("/cong-tac");
         break;
       default:
         break;
     }
   };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    const decoded = jwtDecode(token);
+    setUsername(decoded.username);
+  }, []);
   return (
     <Grid container>
       <Grid item lg={12}>
@@ -58,7 +64,7 @@ export default function Sidebar() {
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center", columnGap: 1 }}>
             <Avatar sx={{ width: "30px", height: "30px" }} />
-            <Typography sx={{ color: "white" }}>Admin</Typography>
+            <Typography sx={{ color: "white" }}>{username}</Typography>
           </Box>
         </Box>
       </Grid>
@@ -104,9 +110,9 @@ export default function Sidebar() {
               onClick={(e) => handleListItemClick(e, 4)}
             >
               <ListItemIcon>
-                <PaidIcon sx={{ color: "white" }} />
+                <WorkIcon sx={{ color: "white" }} />
               </ListItemIcon>
-              <ListItemText>Quan ly luong</ListItemText>
+              <ListItemText>Quan ly cong tac</ListItemText>
             </ListItemButton>
             <ListItemButton
               selected={selected === 5}
@@ -115,7 +121,7 @@ export default function Sidebar() {
               <ListItemIcon>
                 <WorkIcon sx={{ color: "white" }} />
               </ListItemIcon>
-              <ListItemText>Quan ly cong tac</ListItemText>
+              <ListItemText>Quan ly nghi phep</ListItemText>
             </ListItemButton>
           </List>
         </Box>
