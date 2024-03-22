@@ -35,6 +35,7 @@ export default function Sidebar() {
         navigate("/cong-tac");
         break;
       case 5:
+        navigate("/nghi-phep");
         break;
       default:
         break;

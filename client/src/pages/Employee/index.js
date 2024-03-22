@@ -30,10 +30,20 @@ export default function Employees() {
         navigate("/nhan-vien/them");
         break;
       case "delete":
-        console.log("delete");
+        handleDelete(id);
         break;
       default:
         break;
+    }
+  };
+  const handleDelete = async (id) => {
+    try {
+      if (window.confirm("ban co muon xoa khong!")) {
+        await axios.post(`${api}/xoa-nhan-vien/${id}`);
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
   useEffect(() => {
@@ -64,7 +74,7 @@ export default function Employees() {
       </Grid>
       <Grid item lg={12}>
         <CardTable title="Danh sach nhan vien">
-          <TableContainer sx={{ height: "450px" }}>
+          <TableContainer sx={{ maxHeight: "450px", overflow: "auto" }}>
             <Table stickyHeader>
               <TableHead>
                 <TableRow>
@@ -72,7 +82,8 @@ export default function Employees() {
                   <TableCell>Ho va Ten</TableCell>
                   <TableCell>Nam sinh</TableCell>
                   <TableCell>Gioi tinh</TableCell>
-                  <TableCell>So CMND/CCCD</TableCell>
+                  <TableCell>Vi tri</TableCell>
+                  <TableCell>Email</TableCell>
                   <TableCell>Dien thoai</TableCell>
                   <TableCell>Tuy chinh</TableCell>
                 </TableRow>
@@ -87,7 +98,8 @@ export default function Employees() {
                         {dayjs(item.namsinh).format("DD/MM/YYYY")}
                       </TableCell>
                       <TableCell>{item.gioitinh}</TableCell>
-                      <TableCell>{item.cccd}</TableCell>
+                      <TableCell>{item.vitri}</TableCell>
+                      <TableCell>{item.email}</TableCell>
                       <TableCell>{item.dienthoai}</TableCell>
                       <TableCell>
                         <ButtonGroup>

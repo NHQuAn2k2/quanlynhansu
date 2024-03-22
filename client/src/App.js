@@ -16,6 +16,8 @@ import AddWork from "./pages/work/add";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import EditWork from "./pages/work/edit";
+import Rest from "./pages/rest";
 function App() {
   const navigate = useNavigate();
   useEffect(() => {
@@ -58,8 +60,10 @@ function App() {
         {/* work */}
         <Route path="/cong-tac" element={<Work />} />
         <Route path="/cong-tac/them" element={<AddWork />} />
+        <Route path="/cong-tac/sua/:id" element={<EditWork />} />
         {/* ------------------------------------------------------- */}
         {/* rest */}
+        <Route path="/nghi-phep" element={<Rest />} />
         {/* ------------------------------------------------------- */}
       </Route>
     </Routes>

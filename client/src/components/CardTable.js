@@ -9,7 +9,7 @@ export default function CardTable({ children, title }) {
         {title}
       </Typography>
       <Divider />
-      {children}
+      <div style={{ overflow: "auto" }}>{children}</div>
     </Paper>
   );
 }

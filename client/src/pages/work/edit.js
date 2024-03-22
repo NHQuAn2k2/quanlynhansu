@@ -2,20 +2,16 @@ import React, { useEffect, useState } from "react";
 import Card from "../../components/Card";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
-import Select from "@mui/material/Select";
 import Box from "@mui/material/Box";
 import axios from "axios";
 import dayjs from "dayjs";
 import { api } from "../../utils/constant";
-import { useNavigate } from "react-router-dom";
-export default function AddWork() {
+import { useNavigate, useParams } from "react-router-dom";
+export default function EditWork() {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [employees, setEmployees] = useState([]);
-  const [data, setData] = useState({
-    manhanvien: "",
+  const [work, setWork] = useState({
     ngaybatdau: "",
     ngayketthuc: "",
     namhoc: "",
@@ -23,70 +19,52 @@ export default function AddWork() {
     noidung: "",
     trangthai: "",
   });
-  const handleChangeInput = (e) => {
-    setData((pre) => ({ ...pre, [e.target.name]: e.target.value }));
-  };
-  const handleAdd = async () => {
-    if (
-      data.manhanvien === "" ||
-      data.ngaybatdau === "" ||
-      data.ngayketthuc === "" ||
-      data.namhoc === "" ||
-      data.hocky === "" ||
-      data.noidung === "" ||
-      data.trangthai === ""
-    ) {
-      window.alert("vui long nhap day du thong tin!");
-      return;
-    }
-    const newData = {
-      ...data,
-      ngaybatdau: dayjs(data.ngaybatdau).format("YYYY-MM-DD"),
-      ngayketthuc: dayjs(data.ngayketthuc).format("YYYY-MM-DD"),
+  const handleEdit = async () => {
+    const newWork = {
+      ...work,
+      ngaybatdau: dayjs(work.ngaybatdau).format("YYYY-MM-DD"),
+      ngayketthuc: dayjs(work.ngayketthuc).format("YYYY-MM-DD"),
     };
     try {
-      await axios.post(`${api}/them-cong-tac`, newData);
+      await axios.post(`${api}/sua-cong-tac/${id}`, newWork);
       navigate("/cong-tac");
       window.location.reload();
     } catch (error) {
       console.log(error);
     }
   };
+  const handleChangeInput = (e) => {
+    setWork((pre) => ({ ...pre, [e.target.name]: e.target.value }));
+  };
   useEffect(() => {
     const fetchApi = async () => {
-      const res = await axios.get(`${api}/danh-sach-nhan-vien`);
-      setEmployees(res.data.data);
       try {
+        const res = await axios.get(`${api}/chi-tiet-cong-tac/${id}`);
+        const { data } = res.data;
+        setWork(data);
       } catch (error) {
         console.log(error);
       }
     };
     fetchApi();
-  }, []);
+  }, [id]);
   return (
-    <Card title="Them cong tac">
-      <FormControl size="small" fullWidth>
-        <Select
-          name="manhanvien"
-          displayEmpty
-          defaultValue={""}
-          onChange={handleChangeInput}
-        >
-          <MenuItem disabled value="">
-            Chon nhan vien
-          </MenuItem>
-          {employees.length > 0 &&
-            employees.map((item, index) => (
-              <MenuItem key={item.manhanvien} value={item.manhanvien}>
-                {item.manhanvien + " - " + item.hoten}
-              </MenuItem>
-            ))}
-        </Select>
-      </FormControl>
+    <Card title="Sua cong tac">
+      <TextField
+        fullWidth
+        size="small"
+        disabled
+        value={`${work.manhanvien} - ${work.hoten}`}
+      />
       <Grid container sx={{ pt: 4 }} spacing={2}>
         <Grid item lg={6}>
           <TextField
             onChange={handleChangeInput}
+            value={
+              dayjs(work.ngaybatdau).isValid()
+                ? dayjs(work.ngaybatdau).format("YYYY-MM-DD")
+                : ""
+            }
             name="ngaybatdau"
             size="small"
             type="date"
@@ -98,6 +76,11 @@ export default function AddWork() {
         <Grid item lg={6}>
           <TextField
             onChange={handleChangeInput}
+            value={
+              dayjs(work.ngayketthuc).isValid()
+                ? dayjs(work.ngayketthuc).format("YYYY-MM-DD")
+                : ""
+            }
             name="ngayketthuc"
             size="small"
             type="date"
@@ -109,6 +92,7 @@ export default function AddWork() {
         <Grid item lg={6}>
           <TextField
             onChange={handleChangeInput}
+            value={work.namhoc}
             name="namhoc"
             size="small"
             fullWidth
@@ -118,6 +102,7 @@ export default function AddWork() {
         <Grid item lg={6}>
           <TextField
             onChange={handleChangeInput}
+            value={work.hocky}
             name="hocky"
             size="small"
             fullWidth
@@ -127,6 +112,7 @@ export default function AddWork() {
         <Grid item lg={6}>
           <TextField
             onChange={handleChangeInput}
+            value={work.noidung}
             name="noidung"
             size="small"
             fullWidth
@@ -137,6 +123,7 @@ export default function AddWork() {
           <TextField
             onChange={handleChangeInput}
             name="trangthai"
+            value={work.trangthai}
             size="small"
             fullWidth
             placeholder="Trang thai"
@@ -144,8 +131,8 @@ export default function AddWork() {
         </Grid>
       </Grid>
       <Box sx={{ pt: 2 }}>
-        <Button onClick={handleAdd} size="small" variant="outlined">
-          them
+        <Button onClick={handleEdit} size="small" variant="outlined">
+          luu
         </Button>
         <Button
           onClick={() => navigate("/cong-tac")}
