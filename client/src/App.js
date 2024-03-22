@@ -18,6 +18,8 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import EditWork from "./pages/work/edit";
 import Rest from "./pages/rest";
+import AddRest from "./pages/rest/add";
+import EditRest from "./pages/rest/edit";
 function App() {
   const navigate = useNavigate();
   useEffect(() => {
@@ -64,6 +66,8 @@ function App() {
         {/* ------------------------------------------------------- */}
         {/* rest */}
         <Route path="/nghi-phep" element={<Rest />} />
+        <Route path="/nghi-phep/them" element={<AddRest />} />
+        <Route path="/nghi-phep/sua/:id" element={<EditRest />} />
         {/* ------------------------------------------------------- */}
       </Route>
     </Routes>

@@ -17,10 +17,14 @@ import { jwtDecode } from "jwt-decode";
 const heightHeader = "55px";
 export default function Sidebar() {
   const navigate = useNavigate();
-  const [selected, setSelected] = useState(1);
+  const [selected, setSelected] = useState(() => {
+    const selected = Number(localStorage.getItem("selected"));
+    return selected ? selected : 1;
+  });
   const [username, setUsername] = useState("");
   const handleListItemClick = (event, index) => {
     setSelected(index);
+    localStorage.setItem("selected", index);
     switch (index) {
       case 1:
         navigate("/nhan-vien");

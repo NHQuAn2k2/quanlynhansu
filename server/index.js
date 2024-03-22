@@ -312,8 +312,60 @@ app.get("/chi-tiet-cong-tac/:id", (req, res) => {
 });
 //---------------------------------------------
 // nghi phep
-app.post("/them-nghi-phep", (req, res) => {});
-app.post("/xoa-nghi-phep/:id", (req, res) => {});
+app.post("/them-nghi-phep", (req, res) => {
+  const { manhanvien, ngaybatdau, ngayketthuc, lydo, trangthai } = req.body;
+  con.query(
+    "insert into nghiphep (manhanvien, ngaybatdau, ngayketthuc, lydo, trangthai) values (?, ?, ?, ?, ?)",
+    [manhanvien, ngaybatdau, ngayketthuc, lydo, trangthai],
+    (err, result) => {
+      if (err) throw err;
+      return res.status(200).json({ message: "them thanh cong!" });
+    }
+  );
+});
+app.get("/danh-sach-nghi-phep", (req, res) => {
+  con.query(
+    "select * from nghiphep join nhanvien on nghiphep.manhanvien = nhanvien.manhanvien",
+    (err, result) => {
+      if (err) throw err;
+      return res.status(200).json({ data: result });
+    }
+  );
+});
+app.post("/xoa-nghi-phep/:id", (req, res) => {
+  const { id } = req.params;
+  con.query(
+    "delete from nghiphep where manghiphep = ?",
+    [id],
+    (err, result) => {
+      if (err) throw err;
+      return res.status(200).json({ message: "xoa thanh cong!" });
+    }
+  );
+});
+app.post("/sua-nghi-phep/:id", (req, res) => {
+  const { id } = req.params;
+  const { ngaybatdau, ngayketthuc, lydo, trangthai } = req.body;
+  con.query(
+    "update nghiphep set ngaybatdau = ?, ngayketthuc = ?, lydo = ?, trangthai = ? where manghiphep = ?",
+    [ngaybatdau, ngayketthuc, lydo, trangthai, id],
+    (err, result) => {
+      if (err) throw err;
+      return res.status(200).json({ message: "sua thanh cong!" });
+    }
+  );
+});
+app.get("/chi-tiet-nghi-phep/:id", (req, res) => {
+  const { id } = req.params;
+  con.query(
+    "select * from nghiphep join nhanvien on nghiphep.manhanvien = nhanvien.manhanvien where manghiphep = ?",
+    [id],
+    (err, result) => {
+      if (err) throw err;
+      return res.status(200).json({ data: result[0] });
+    }
+  );
+});
 //---------------------------------------------
 app.listen(port, () => {
   console.log(`server running on port: ${port}`);
