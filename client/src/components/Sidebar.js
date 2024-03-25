@@ -8,6 +8,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Logout from "@mui/icons-material/Logout";
 import GroupIcon from "@mui/icons-material/Group";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import WorkIcon from "@mui/icons-material/Work";
@@ -22,6 +26,26 @@ export default function Sidebar() {
     return selected ? selected : 1;
   });
   const [username, setUsername] = useState("");
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleLogout = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      window.location.reload();
+      setAnchorEl(null);
+    }
+    localStorage.removeItem("token");
+    navigate("/login");
+    setAnchorEl(null);
+    window.location.reload();
+  };
   const handleListItemClick = (event, index) => {
     setSelected(index);
     localStorage.setItem("selected", index);
@@ -68,9 +92,26 @@ export default function Sidebar() {
             Quan Ly Nhan Su Truong Hoc STU
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center", columnGap: 1 }}>
-            <Avatar sx={{ width: "30px", height: "30px" }} />
+            <IconButton onClick={handleClick}>
+              <Avatar sx={{ width: "30px", height: "30px" }} />
+            </IconButton>
             <Typography sx={{ color: "white" }}>{username}</Typography>
           </Box>
+          <Menu
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            onClick={handleClose}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          >
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <Logout fontSize="small" />
+              </ListItemIcon>
+              Dang xuat
+            </MenuItem>
+          </Menu>
         </Box>
       </Grid>
       <Grid item lg={2.5}>
