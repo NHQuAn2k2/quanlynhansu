@@ -4,13 +4,24 @@ const app = express();
 const jwt = require("jsonwebtoken");
 const mysql = require("mysql2");
 const port = 3001;
+const whitelist = [
+  "http://localhost:3000",
+  "https://quanlynhansu-reactjs.vercel.app",
+];
 app.use(
   cors({
-    origin: "http://localhost:3000",
-    headers: ["Content-Type"],
+    origin: function (origin, callback) {
+      console.log(origin);
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
+app.use(express.json());
 // mysql------------------------------
 const con = mysql.createConnection({
   host: "bi9vhv5gpr53ceiwuu48-mysql.services.clever-cloud.com",
