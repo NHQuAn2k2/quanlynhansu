@@ -29,8 +29,11 @@ const con = mysql.createConnection({
   password: "vxJVtLyeSGj818bupHME",
   database: "bi9vhv5gpr53ceiwuu48",
 });
-con.connect(function (err) {
-  if (err) throw err;
+con.connect((err) => {
+  if (err) {
+    console.log(err);
+    throw err;
+  }
   console.log("Connected!");
 });
 //-------------------------------------
